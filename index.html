@@ -1,82 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bot Simulator</title>
+    <title>بوتات الزيارة</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-            margin: 0;
+            text-align: center;
+            margin: 50px;
         }
-        h1 {
-            color: #333;
+        #botContainer {
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            width: 300px;
         }
         input[type="text"] {
+            width: 80%;
             padding: 10px;
-            width: 300px;
-            margin-bottom: 20px;
-            font-size: 16px;
+            margin: 10px 0;
         }
         button {
             padding: 10px 20px;
-            background-color: #28a745;
+            background-color: #4CAF50;
             color: white;
             border: none;
-            font-size: 16px;
+            border-radius: 5px;
             cursor: pointer;
         }
         button:hover {
-            background-color: #218838;
-        }
-        .message {
-            margin-top: 20px;
-            font-size: 16px;
-            color: #333;
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-
-    <h1>Bot Simulation</h1>
-    <input type="text" id="urlInput" placeholder="Enter website URL">
-    <button onclick="startBots()">Start Bots</button>
-
-    <div class="message" id="message"></div>
+    <h1>أطلق بوتات الزيارة</h1>
+    <div id="botContainer">
+        <input type="text" id="siteUrlInput" placeholder="أدخل رابط الموقع هنا" />
+        <button id="startBots">بدء الروبوتات</button>
+        <p id="statusMessage"></p>
+    </div>
 
     <script>
-        async function startBots() {
-            const url = document.getElementById('urlInput').value;
-            const messageDiv = document.getElementById('message');
+        document.getElementById('startBots').onclick = function() {
+            let siteUrl = document.getElementById('siteUrlInput').value;
+            let statusMessage = document.getElementById('statusMessage');
+            statusMessage.innerText = '';
 
-            if (!url) {
-                alert('Please enter a valid URL');
+            // التحقق من صحة الرابط
+            if (!siteUrl || !isValidUrl(siteUrl)) {
+                alert("يرجى إدخال رابط صالح.");
                 return;
             }
 
-            messageDiv.innerText = 'Bots are starting...';
-
-            const response = await fetch('/start-bots', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ url }),
-            });
-
-            if (response.ok) {
-                messageDiv.innerText = 'Bots started successfully!';
-            } else {
-                messageDiv.innerText = 'Error starting bots.';
+            // بدء الروبوتات
+            for (let i = 0; i < 1000; i++) {
+                startBot(siteUrl);
             }
+        };
+
+        function startBot(siteUrl) {
+            // ضبط توقيت عشوائي بين 0-5 ثواني
+            let randomDelay = Math.random() * 5000;
+
+            setTimeout(function() {
+                // فتح الرابط في نافذة جديدة
+                let newWindow = window.open(siteUrl, '_blank');
+                if (newWindow) {
+                    // الانتظار لمدة 40 ثانية
+                    setTimeout(function() {
+                        newWindow.close();
+                    }, 40000);
+                } else {
+                    alert("تعذر فتح النافذة. يرجى السماح بالنوافذ المنبثقة في المتصفح.");
+                }
+            }, randomDelay);
+        }
+
+        function isValidUrl(url) {
+            // تعبير عادي للتحقق من صحة الرابط
+            const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+                '((([a-z\\d]([a-z\\d-]*[a-z\\d])?)\\.)+[a-z]{2,}|' + // domain name
+                'localhost|' + // localhost...
+                '\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|' + // ipv4
+                '\\[([a-f\\d]{1,4}:){7,7}[a-f\\d]{1,4}\\]|' + // ipv6
+                '([a-f\\d]{1,4}:){1,7}:|'+ // ipv6
+                '([a-f\\d]{1,4}:){1,6}:[a-f\\d]{1,4}|'+ // ipv6
+                '([a-f\\d]{1,4}:){1,5}([a-f\\d]{1,4}:){1,2}|'+ // ipv6
+                '([a-f\\d]{1,4}:){1,4}(:[a-f\\d]{1,4}){1,3}|'+ // ipv6
+                '([a-f\\d]{1,4}:){1,3}(:[a-f\\d]{1,4}){1,4}|'+ // ipv6
+                '([a-f\\d]{1,4}:){1,2}(:[a-f\\d]{1,4}){1,5}|'+ // ipv6
+                '[a-f\\d]{1,4}:((:[a-f\\d]{1,4}){1,6})|'+ // ipv6
+                ':((:[a-f\\d]{1,4}){1,7}|:)|'+ // ipv6
+                'fe80:(:[a-f\\d]{0,4}){0,4}%[\\da-zA-Z]{1,}|'+ // ipv6
+                '::(ffff(:0{1,4}){0,1}:){0,1}' + // ipv6
+                '((25[0-5]|(2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9]))\\.){3}' + // ipv4
+                '(25[0-5]|(2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9]))|' + // ipv4
+                '([a-f\\d]{1,4}:){1,4}:\\d{1,4}|'+ // ipv6
+                '([a-f\\d]{1,4}:){1,4}((25[0-5]|(2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9]))\\.){3}' + // ipv4
+                '(25[0-5]|(2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9]))$'); // ipv4
+            return !!pattern.test(url);
         }
     </script>
-
 </body>
 </html>
