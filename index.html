@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+        h1 {
+            color: #333;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Bot Simulation</h1>
+    <input type="text" id="urlInput" placeholder="Enter website URL">
+    <button onclick="startBots()">Start Bots</button>
+
+    <div class="message" id="message"></div>
+
+    <script>
+        async function startBots() {
+            const url = document.getElementById('urlInput').value;
+            const messageDiv = document.getElementById('message');
+
+            if (!url) {
+                alert('Please enter a valid URL');
+                return;
+            }
+
+            messageDiv.innerText = 'Bots are starting...';
+
+            const response = await fetch('/start-bots', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url }),
+            });
+
+            if (response.ok) {
+                messageDiv.innerText = 'Bots started successfully!';
+            } else {
+                messageDiv.innerText = 'Error starting bots.';
+            }
+        }
+    </script>
+
+</body>
+</html>
